@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guidance Hub - About Us</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter for general text, and Montserrat for headings -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Shared Custom Styles from Homepage */
+        :root {
+            --color-light-bg: #f8fafc; /* Slate-50 */
+            --color-light-text: #1e293b; /* Slate-800 */
+            --color-light-nav-bg: #ffffff;
+            --color-light-nav-text: #475569; /* Slate-600 */
+            --color-light-hover: #e2e8f0; /* Slate-200 */
+
+            --color-dark-bg: #0f172a; /* Slate-900 */
+            --color-dark-text: #f1f5f9; /* Slate-100 */
+            --color-dark-nav-bg: #1e293b; /* Slate-800 */
+            --color-dark-nav-text: #cbd5e1; /* Slate-300 */
+            --color-dark-hover: #334155; /* Slate-700 */
+        }
+
+        .light {
+            background-color: var(--color-light-bg);
+            color: var(--color-light-text);
+        }
+        .dark {
+            background-color: var(--color-dark-bg);
+            color: var(--color-dark-text);
+        }
+
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .font-inter {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-montserrat {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .stardust {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            animation-name: move-and-fade;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
+        
+        .light .star {
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        @keyframes move-and-fade {
+            0% { transform: translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Card hover effect with glow */
+        .info-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .info-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.4), 0 4px 10px -2px rgba(0, 0, 0, 0.1); /* Blue glow */
+        }
+        .dark .info-card:hover {
+             box-shadow: 0 0 30px rgba(34, 211, 238, 0.5), 0 4px 10px -2px rgba(0, 0, 0, 0.2); /* Cyan glow */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-inter transition-colors duration-500">
+
+    <!-- Stardust Container -->
+    <div id="stardust-container" class="stardust"></div>
+
+    <!-- Header and Navigation Bar -->
+    <!-- COPY THIS ENTIRE HEADER BLOCK -->
+<header class="sticky top-0 z-20 p-4 shadow-md transition-colors duration-500
+               bg-light-nav-bg/80 dark:bg-dark-nav-bg/80 backdrop-blur-md">
+    <nav class="container mx-auto flex items-center justify-between flex-wrap">
+        <a href="{% url 'home' %}" class="flex items-center space-x-2 mr-6">
+            <span class="text-3xl font-bold gradient-text bg-gradient-to-r from-blue-500 via-yellow-500 to-pink-500">
+                💡
+            </span>
+            <span class="text-3xl font-extrabold font-montserrat gradient-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+                Guidance Hub !
+            </span>
+        </a>
+        <div class="flex items-center space-x-6">
+            <ul class="flex space-x-6 text-lg font-medium text-light-nav-text dark:text-dark-nav-text">
+                <li><a href="{% url 'home' %}" class="hover:text-blue-500 dark:hover:text-blue-400">Home</a></li>
+                
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'profile' %}" class="hover:text-blue-500 dark:hover:text-blue-400">Profile</a></li>
+                    <li>
+                        <form class="inline" method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="hover:text-blue-500 dark:hover:text-blue-400">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="hover:text-blue-500 dark:hover:text-blue-400">Login</a></li>
+                    <li><a href="{% url 'register' %}" class="hover:text-blue-500 dark:hover:text-blue-400">Register</a></li>
+                {% endif %}
+            </ul>
+            <button id="themeToggle" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500
+                                           bg-light-hover dark:bg-dark-hover
+                                           text-light-text dark:text-dark-text
+                                           transition-colors duration-300">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            </button>
+        </div>
+    </nav>
+</header>
+
+    <!-- Main Content Area for About Page -->
+    <main class="flex-grow flex flex-col items-center justify-center p-4 py-12">
+        <div class="container mx-auto max-w-4xl text-center">
+            <h1 class="font-extrabold text-4xl md:text-5xl lg:text-6xl mb-8
+                           gradient-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500
+                           leading-tight font-montserrat">
+                About Guidance Hub
+            </h1>
+
+            <p class="text-lg md:text-xl mb-8 leading-relaxed">
+                Welcome to <strong>Guidance Hub</strong>, your dedicated partner in navigating the dynamic world of engineering careers. We understand that the path to becoming a successful engineer can be complex and challenging. That's why we've built a comprehensive platform designed to illuminate your journey, from foundational knowledge to advanced specializations.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 text-left">
+                <div class="info-card bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <h2 class="text-2xl font-bold mb-4 gradient-text bg-gradient-to-r from-green-400 to-teal-500 font-montserrat">
+                        Our Mission
+                    </h2>
+                    <p class="text-base leading-relaxed text-slate-800 dark:text-slate-200">
+                        Our mission is to <strong>empower aspiring and current engineers</strong> with clear, actionable, and personalized roadmaps. We aim to break down the complexities of various engineering disciplines, providing structured learning paths, essential resources, and a supportive community to help you achieve your professional aspirations.
+                    </p>
+                </div>
+
+                <div class="info-card bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <h2 class="text-2xl font-bold mb-4 gradient-text bg-gradient-to-r from-yellow-400 to-orange-500 font-montserrat">
+                        What We Offer
+                    </h2>
+                    <ul class="text-base leading-relaxed text-slate-800 dark:text-slate-200 space-y-2">
+                        <li>✅ <strong>Curated Roadmaps:</strong> Step-by-step guides for various engineering specializations.</li>
+                        <li>📈 <strong>Skill Development:</strong> Tools and advice to help you identify and bridge skill gaps.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p class="text-lg md:text-xl mb-12 leading-relaxed">
+                At Guidance Hub, we believe that with the right direction and resources, every ambitious individual can forge a successful and impactful engineering career. We are constantly updating our content to ensure you have the most relevant information at your fingertips.
+            </p>
+
+            <h2 class="text-3xl font-bold mb-6 gradient-text bg-gradient-to-r from-red-500 to-purple-600 font-montserrat">
+                Join Our Journey!
+            </h2>
+            <p class="text-lg md:text-xl mb-8 leading-relaxed">
+                Whether you're just starting out, looking to pivot, or aiming to master a new skill, Guidance Hub is here to light your way. Explore our roadmaps, connect with our community, and take the next step towards your engineering dreams.
+            </p>
+
+        <a href="{% url 'branch-list' %}" class="cta-button inline-block px-8 py-4 text-xl font-bold rounded-full shadow-lg
+                                           bg-gradient-to-r from-blue-600 to-purple-700 text-white
+                                           focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
+                Start Your Roadmaps Today
+            </a>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="text-center p-6 mt-12 text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800">
+        <p>&copy; 2025 Guidance Hub | Charting Your Course to Success 🚀</p>
+    </footer>
+
+    <!-- JavaScript for Theme Toggle, Typewriter Effect, and Stardust -->
+    <script>
+        // Theme Toggle Logic
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement; // The <html> tag
+
+        // Function to update the toggle icon based on the current theme
+        function updateToggleIcon(isDark) {
+            themeToggle.innerHTML = isDark
+                ? '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>' // Moon icon
+                : '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.459 4.582a1 1 0 01-1.398 0l-.01-.011a1 1 0 010-1.398l.01-.011a1 1 0 011.398 0l.01.011a1 1 0 010 1.398zM5.541 4.418a1 1 0 010 1.398l-.01.011a1 1 0 01-1.398 0l-.01-.011a1 1 0 010-1.398l.01-.011zM2 10a1 1 0 011-1h1a1 1 0 110 2H3a1 1 0 01-1-1zm15 0a1 1 0 011-1h1a1 1 0 110 2h-1a1 1 0 01-1-1zM5.541 15.582a1 1 0 011.398 0l.01.011a1 1 0 010 1.398l-.01.011a1 1 0 01-1.398 0l-.01-.011zM14.459 4.418a1 1 0 010 1.398l.01.011a1 1 0 01-1.398 0l-.01-.011a1 1 0 010-1.398l.01-.011z"></path></svg>'; // Sun icon
+        }
+
+        // Check for saved theme preference in localStorage
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            htmlElement.classList.remove('light', 'dark'); // Remove any default classes
+            htmlElement.classList.add(savedTheme);
+            updateToggleIcon(savedTheme === 'dark');
+        } else {
+            // Default to light theme if no preference is saved
+            htmlElement.classList.add('light');
+            updateToggleIcon(false);
+        }
+
+        // Event listener for theme toggle button
+        themeToggle.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                htmlElement.classList.add('light');
+                localStorage.setItem('theme', 'light');
+                updateToggleIcon(false);
+            } else {
+                htmlElement.classList.remove('light');
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                updateToggleIcon(true);
+            }
+        });
+
+        // Typewriter Effect Logic
+        const typewriterTextElement = document.getElementById('typewriter-text');
+        const fullText = "Guidance Hub";
+        let charIndex = 0;
+
+        function typeWriter() {
+            if (charIndex < fullText.length) {
+                typewriterTextElement.textContent += fullText.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, 150); // Adjust typing speed (milliseconds)
+            }
+        }
+
+        // Stardust Animation Logic
+        const stardustContainer = document.getElementById('stardust-container');
+        const starCount = 50; // Number of stars to generate
+
+        function createStar() {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            
+            // Randomize star position, size, and animation duration
+            const size = Math.random() * 3 + 1; // Stars between 1px and 4px
+            const duration = Math.random() * 15 + 10; // Animation duration between 10s and 25s
+            
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `-${size}px`; // Start above the viewport
+            star.style.animationDuration = `${duration}s`;
+            star.style.animationDelay = `${Math.random() * 10}s`; // Stagger the animations
+            
+            stardustContainer.appendChild(star);
+        }
+        
+        // Create the stars when the script loads
+        function initializeEffects() {
+            typeWriter();
+            for (let i = 0; i < starCount; i++) {
+                createStar();
+            }
+        }
+
+        window.onload = initializeEffects;
+    </script>
+</body>
+</html>

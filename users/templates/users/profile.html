@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile | Guidance Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- Font Imports --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap');
+
+        /* --- Theme Color Variables --- */
+        :root {
+            --color-light-bg: #f8fafc;
+            --color-light-text: #1e293b;
+            --color-light-nav-bg: #ffffff;
+            --color-light-nav-text: #475569;
+            --color-light-hover: #e2e8f0;
+
+            --color-dark-bg: #0f172a;
+            --color-dark-text: #f1f5f9;
+            --color-dark-nav-bg: #1e293b;
+            --color-dark-nav-text: #cbd5e1;
+            --color-dark-hover: #334155;
+        }
+        .light { background-color: var(--color-light-bg); color: var(--color-light-text); }
+        .dark { background-color: var(--color-dark-bg); color: var(--color-dark-text); }
+        body { position: relative; overflow-x: hidden; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        .gradient-text { background-clip: text; -webkit-background-clip: text; color: transparent; }
+
+        /* --- Stardust Background Effect --- */
+        .stardust { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+        .star { position: absolute; background: #fff; border-radius: 50%; opacity: 0; animation-name: move-and-fade; animation-iteration-count: infinite; animation-timing-function: linear; }
+        .light .star { background: rgba(0, 0, 0, 0.25); }
+        @keyframes move-and-fade { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(100vh); opacity: 0; } }
+
+        /* --- Profile Card Styles --- */
+        .profile-card { transition: box-shadow 0.3s ease; }
+        .profile-card:hover { box-shadow: 0 0 35px rgba(59, 130, 246, 0.3); }
+        .dark .profile-card:hover { box-shadow: 0 0 40px rgba(34, 211, 238, 0.4); }
+        .tab-active {
+            background-image: linear-gradient(to right, var(--tw-gradient-stops));
+            --tw-gradient-from: #3b82f6;
+            --tw-gradient-to: #8b5cf6;
+            color: white !important;
+            box-shadow: 0 4px 15px -5px rgba(59, 130, 246, 0.6);
+        }
+        .dark .tab-active {
+            --tw-gradient-from: #38bdf8;
+            --tw-gradient-to: #a78bfa;
+            color: #0f172a !important;
+            box-shadow: 0 4px 15px -5px rgba(56, 189, 248, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-inter transition-colors duration-500">
+    <div id="stardust-container" class="stardust"></div>
+    <!-- Header -->
+    <!-- COPY THIS ENTIRE HEADER BLOCK -->
+<header class="sticky top-0 z-20 p-4 shadow-md transition-colors duration-500
+               bg-light-nav-bg/80 dark:bg-dark-nav-bg/80 backdrop-blur-md">
+    <nav class="container mx-auto flex items-center justify-between flex-wrap">
+        <a href="{% url 'home' %}" class="flex items-center space-x-2 mr-6">
+            <span class="text-3xl font-bold gradient-text bg-gradient-to-r from-blue-500 via-yellow-500 to-pink-500">
+                💡
+            </span>
+            <span class="text-3xl font-extrabold font-montserrat gradient-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+                Guidance Hub !
+            </span>
+        </a>
+        <div class="flex items-center space-x-6">
+            <ul class="flex space-x-6 text-lg font-medium text-light-nav-text dark:text-dark-nav-text">
+                <li><a href="{% url 'home' %}" class="hover:text-blue-500 dark:hover:text-blue-400">Home</a></li>
+                <li><a href="{% url 'about' %}" class="hover:text-blue-500 dark:hover:text-blue-400">About</a></li>
+                
+                {% if user.is_authenticated %}
+                    <li>
+                        <form class="inline" method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="hover:text-blue-500 dark:hover:text-blue-400">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="hover:text-blue-500 dark:hover:text-blue-400">Login</a></li>
+                    <li><a href="{% url 'register' %}" class="hover:text-blue-500 dark:hover:text-blue-400">Register</a></li>
+                {% endif %}
+            </ul>
+            <button id="themeToggle" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500
+                                           bg-light-hover dark:bg-dark-hover
+                                           text-light-text dark:text-dark-text
+                                           transition-colors duration-300">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            </button>
+        </div>
+    </nav>
+</header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-12 flex items-center justify-center">
+        <div class="w-full max-w-3xl">
+            <div class="profile-card bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                <!-- Profile Header -->
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-blue-500 dark:border-blue-400 shadow-lg mb-4">
+                        <img id="profile-image" src="{{ user.profile.profile_picture.url }}" alt="User Profile Picture" class="w-full h-full object-cover">
+                    </div>
+                    <h2 id="profile-name" class="text-3xl font-bold font-montserrat text-slate-900 dark:text-white">{{ user.username }}</h2>
+                    <p id="profile-email" class="text-slate-600 dark:text-slate-400 mt-1">{{ user.email }}</p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-center space-x-4 mt-6 border-t border-slate-200 dark:border-slate-700 pt-6">
+                    <button id="details-btn" class="px-6 py-2 font-semibold rounded-md bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 hover:shadow-lg dark:hover:shadow-cyan-500/20 transition-all duration-300 transform hover:scale-105">Profile Details</button>
+                    <button id="settings-btn" class="px-6 py-2 font-semibold rounded-md bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 hover:shadow-lg dark:hover:shadow-cyan-500/20 transition-all duration-300 transform hover:scale-105">Settings</button>
+                </div>
+
+                <!-- Collapsible Content -->
+                <div id="collapsible-content" class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-6 hidden">
+    <div id="details-section" class="hidden space-y-6">
+        <div>
+            <h3 class="text-xl font-semibold mb-4 font-montserrat gradient-text bg-gradient-to-r from-blue-500 to-teal-500">Personal Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div><strong class="block text-slate-500 dark:text-slate-400">Full Name:</strong><span class="text-slate-800 dark:text-slate-200"> {{ user.profile.full_name }}</span></div>
+                <div><strong class="block text-slate-500 dark:text-slate-400">Email:</strong><span class="text-slate-800 dark:text-slate-200"> {{ user.email }}</span></div>
+                <div><strong class="block text-slate-500 dark:text-slate-400">Phone:</strong><span class="text-slate-800 dark:text-slate-200"> {{ user.profile.phone_number }}</span></div>
+                <div><strong class="block text-slate-500 dark:text-slate-400">Date of Birth:</strong><span class="text-slate-800 dark:text-slate-200"> {{ user.profile.date_of_birth }}</span></div>
+                <div><strong class="block text-slate-500 dark:text-slate-400">Gender:</strong><span class="text-slate-800 dark:text-slate-200"> {{ user.profile.gender }}</span></div>
+                <div><strong class="block text-slate-500 dark:text-slate-400">Country:</strong><span class="text-slate-800 dark:text-slate-200"> {{ user.profile.country }}</span></div>
+            </div>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold mb-4 font-montserrat gradient-text bg-gradient-to-r from-purple-500 to-pink-500">Academic Details</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div><strong class="block text-slate-500 dark:text-slate-400">College/University:</strong><span class="text-slate-800 dark:text-slate-200"> {{ user.profile.college }}</span></div>
+                <div><strong class="block text-slate-500 dark:text-slate-400">Department/Branch:</strong><span class="text-slate-800 dark:text-slate-200"> {{ user.profile.branch }}</span></div>
+                <div><strong class="block text-slate-500 dark:text-slate-400">Graduation Year:</strong><span class="text-slate-800 dark:text-slate-200"> {{ user.profile.graduation_year }}</span></div>
+                <div><strong class="block text-slate-500 dark:text-slate-400">Academic Status:</strong><span class="text-slate-800 dark:text-slate-200"> {{ user.profile.academic_status }}</span></div>
+            </div>
+        </div>
+    </div>
+    <div id="settings-section" class="hidden space-y-6">
+        <div>
+            <h3 class="text-xl font-semibold mb-4 font-montserrat gradient-text bg-gradient-to-r from-sky-500 to-indigo-500">Account Settings</h3>
+            <div class="space-y-6">
+                <a href="{% url 'profile-update' %}" class="inline-flex items-center justify-center w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 transition-colors">Edit Profile Information</a>
+            </div>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold mb-4 font-montserrat gradient-text bg-gradient-to-r from-red-500 to-orange-500">Account Actions</h3>
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between mt-6 border-t border-slate-200 dark:border-slate-700 pt-6">
+                <div>
+                    <h4 class="font-semibold text-slate-900 dark:text-white">Logout</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">You will be returned to the login page.</p>
+                </div>
+                <form class="inline mt-4 md:mt-0 md:ml-4" method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="px-6 py-2 bg-slate-600 text-white font-bold rounded-md hover:bg-slate-700 transition-colors flex-shrink-0">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center p-6 mt-12 text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800">
+        <p>&copy; 2025 Guidance Hub | Charting Your Course to Success 🚀</p>
+    </footer>
+
+    <!-- Full JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Theme Toggle Logic ---
+            const themeToggle = document.getElementById('themeToggle');
+            const htmlElement = document.documentElement;
+            function updateToggleIcon(isDark) {
+                if (themeToggle) {
+                    themeToggle.innerHTML = isDark
+                        ? '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>'
+                        : '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.459 4.582a1 1 0 01-1.398 0l-.01-.011a1 1 0 010-1.398l.01-.011a1 1 0 011.398 0l.01.011a1 1 0 010 1.398zM5.541 4.418a1 1 0 010 1.398l-.01.011a1 1 0 01-1.398 0l-.01-.011a1 1 0 010-1.398l.01-.011zM2 10a1 1 0 011-1h1a1 1 0 110 2H3a1 1 0 01-1-1zm15 0a1 1 0 011-1h1a1 1 0 110 2h-1a1 1 0 01-1-1zM5.541 15.582a1 1 0 011.398 0l.01.011a1 1 0 010 1.398l-.01.011a1 1 0 01-1.398 0l-.01-.011zM14.459 4.418a1 1 0 010 1.398l.01.011a1 1 0 01-1.398 0l-.01-.011a1 1 0 010-1.398l.01-.011z"></path></svg>';
+                }
+            }
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                htmlElement.classList.add(savedTheme);
+                updateToggleIcon(savedTheme === 'dark');
+            } else {
+                htmlElement.classList.add('light');
+                updateToggleIcon(false);
+            }
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    if (htmlElement.classList.contains('dark')) {
+                        htmlElement.classList.remove('dark');
+                        htmlElement.classList.add('light');
+                        localStorage.setItem('theme', 'light');
+                        updateToggleIcon(false);
+                    } else {
+                        htmlElement.classList.remove('light');
+                        htmlElement.classList.add('dark');
+                        localStorage.setItem('theme', 'dark');
+                        updateToggleIcon(true);
+                    }
+                });
+            }
+
+            // --- Stardust Animation Logic ---
+            const stardustContainer = document.getElementById('stardust-container');
+            if (stardustContainer) {
+                const starCount = 50;
+                function createStar() {
+                    const star = document.createElement('div');
+                    star.classList.add('star');
+                    const size = Math.random() * 3 + 1;
+                    const duration = Math.random() * 15 + 10;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `-${size}px`;
+                    star.style.animationDuration = `${duration}s`;
+                    star.style.animationDelay = `${Math.random() * 10}s`;
+                    stardustContainer.appendChild(star);
+                }
+                for (let i = 0; i < starCount; i++) {
+                    createStar();
+                }
+            }
+            
+            // --- Tab switching logic ---
+            const detailsBtn = document.getElementById('details-btn');
+            const settingsBtn = document.getElementById('settings-btn');
+            const detailsSection = document.getElementById('details-section');
+            const settingsSection = document.getElementById('settings-section');
+            const collapsibleContent = document.getElementById('collapsible-content');
+
+            function toggleSection(sectionToShow, buttonToActivate) {
+                const wasActive = buttonToActivate.classList.contains('tab-active');
+                
+                detailsBtn.classList.remove('tab-active');
+                settingsBtn.classList.remove('tab-active');
+                
+                if (wasActive) {
+                    collapsibleContent.classList.add('hidden');
+                } else {
+                    collapsibleContent.classList.remove('hidden');
+                    detailsSection.classList.add('hidden');
+                    settingsSection.classList.add('hidden');
+                    sectionToShow.classList.remove('hidden');
+                    buttonToActivate.classList.add('tab-active');
+                }
+            }
+
+            detailsBtn.addEventListener('click', () => toggleSection(detailsSection, detailsBtn));
+            settingsBtn.addEventListener('click', () => toggleSection(settingsSection, settingsBtn));
+        });
+    </script>
+</body>
+</html>
